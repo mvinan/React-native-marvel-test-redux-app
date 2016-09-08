@@ -11,16 +11,24 @@ import {
   AppRegistry,
   StyleSheet,
   Text,
-  View
+  View,
+  ListView,
+  TouchableHighlight,
+  Image
 } from 'react-native';
 
 class List extends Component {
   constructor(props){
     super(props)
     this.fetchData = this.fetchData.bind(this)
+    this.renderLoadingView = this.renderLoadingView.bind(this)
+    this.renderComic = this.renderComic.bind(this)
     this.state = {
       data: [],
-      dataIsLoaded: false
+      dataIsLoaded: false,
+      dataSource: new ListView.DataSource({
+        rowHasChanged: (row1, row2) => row1 !== row2
+      })
     }
   }
 
@@ -38,27 +46,44 @@ class List extends Component {
       .then( response => {
         this.setState({
           data: response.data.results,
-          dataIsLoaded: true
+          dataIsLoaded: true,
+          dataSource: this.state.dataSource.cloneWithRows(response.data.results)
         })
         console.log(this.state)
       })
   }
 
-  render() {
+  renderLoadingView() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit index.ios.js
-        </Text>
-        <Text style={styles.instructions}>
-          Press Cmd+R to reload,{'\n'}
-          Cmd+D or shake for dev menu
-        </Text>
+      <View>
+        <Text>Cargando Comics ...</Text>
       </View>
-    );
+    )
+  }
+
+  renderComic(comic) {
+    return (
+      <TouchableHighlight>
+        <Image source={{uri: `${comic.thumbnail.path}.jpg`}}>
+          <View>
+            <Text>{comic.name}</Text>
+            <Text>{comic.comics.available}</Text>
+          </View>
+        </Image>
+      </TouchableHighlight>
+    )
+  }
+
+  render() {
+    if(this.state.dataIsLoaded){
+      return (
+        <ListView
+          dataSource={this.state.dataSource}
+          renderRow={this.renderComic}
+        />
+      )
+    }
+    return this.renderLoadingView()
   }
 }
 
