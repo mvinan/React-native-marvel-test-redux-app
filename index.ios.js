@@ -1,109 +1,87 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-import Crypto from 'crypto-js'
-import { apiKey, secretKey } from './keys'
-
 import React, { Component } from 'react';
 import {
-  AppRegistry,
-  StyleSheet,
-  Text,
   View,
-  ListView,
-  TouchableHighlight,
-  Image
+  AppRegistry,
+  Text,
+  Navigator,
 } from 'react-native';
 
-class List extends Component {
-  constructor(props){
-    super(props)
-    this.fetchData = this.fetchData.bind(this)
-    this.renderLoadingView = this.renderLoadingView.bind(this)
-    this.renderComic = this.renderComic.bind(this)
-    this.state = {
-      data: [],
-      dataIsLoaded: false,
-      dataSource: new ListView.DataSource({
-        rowHasChanged: (row1, row2) => row1 !== row2
-      })
-    }
-  }
+import styles, {colors} from './components/styles'
+/*Components*/
+import ComicsView from './components/ComicsView'
+import ListComicsView from './components/ListComicsView'
+import ComicDetailView from './components/ComicDetailView'
 
-  componentWillMount(){
-    this.fetchData('http://gateway.marvel.com/v1/public/characters')
-  }
-
-  fetchData(url){
-    let hash, ts
-    ts = 2
-    hash = Crypto.MD5(ts + secretKey + apiKey)
-
-    fetch(`${url}?ts=${ts}&apikey=${apiKey}&hash=${hash}`)
-      .then( result => result.json() )
-      .then( response => {
-        this.setState({
-          data: response.data.results,
-          dataIsLoaded: true,
-          dataSource: this.state.dataSource.cloneWithRows(response.data.results)
-        })
-        console.log(this.state)
-      })
-  }
-
-  renderLoadingView() {
-    return (
-      <View>
-        <Text>Cargando Comics ...</Text>
-      </View>
-    )
-  }
-
-  renderComic(comic) {
-    return (
-      <TouchableHighlight>
-        <Image source={{uri: `${comic.thumbnail.path}.jpg`}}>
-          <View>
-            <Text>{comic.name}</Text>
-            <Text>{comic.comics.available}</Text>
-          </View>
-        </Image>
-      </TouchableHighlight>
-    )
-  }
-
-  render() {
-    if(this.state.dataIsLoaded){
+const routeMapperNavigationBar = {
+  LeftButton: (route, navigator, index, navState) => {
+    if(route.index !== 0){
       return (
-        <ListView
-          dataSource={this.state.dataSource}
-          renderRow={this.renderComic}
-        />
+        <Text
+          onPress={()=>{navigator.pop()}}
+          style={{marginLeft: 10, paddingBottom: 10, paddingRight: 10, color: colors.blue}}>
+          Atras
+        </Text>
       )
     }
-    return this.renderLoadingView()
+    return null
+  },
+  RightButton: (route, navigator, index, navState) => {
+    return null
+  },
+  Title: (route, navigator, index, navState) => {
+    if(route.index !== 0){
+      return <Text>{route.title}</Text>
+    }
+    return null
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
+class App extends Component {
+  constructor(props){
+    super(props)
+    this.renderScene = this.renderScene.bind(this)
+    this.configureSceneAnimation = this.configureSceneAnimation.bind(this)
+  }
 
-AppRegistry.registerComponent('List', () => List);
+  configureSceneAnimation(route, routeStack){
+    switch (route.name) {
+      case 'ComicsView':
+        return Navigator.SceneConfigs.FloatFromBottom
+      case 'ListComicsView':
+        return Navigator.SceneConfigs.FloatFromBottom
+      case 'ComicDetailView':
+        return Navigator.SceneConfigs.HorizontalSwipeJump
+      default:
+        return Navigator.SceneConfigs.PushFromRight
+    }
+  }
+
+  renderScene(route, navigator) {
+    switch (route.name) {
+      case 'ComicsView':
+        return <ComicsView route={route} navigator={navigator} />
+      case 'ListComicsView':
+        return <ListComicsView route={route} navigator={navigator} />
+      case 'ComicDetailView':
+        return <ComicDetailView route={route} navigator={navigator} />
+    }
+  }
+
+  render() {
+    return (
+      <Navigator
+        initialRoute={{name: 'ComicsView', title: 'Home', index: 0}}
+        renderScene={this.renderScene}
+        configureScene={this.configureSceneAnimation}
+        navigationBar={
+          <Navigator.NavigationBar
+            style={{backgroundColor: colors.whiteTransparent, height: 50, paddingTop: 10}}
+            routeMapper={routeMapperNavigationBar}
+          />
+        }
+      />
+    );
+  }
+}
+
+AppRegistry.registerComponent('List', () => App);
