@@ -17,13 +17,9 @@ import NavigationBar from 'react-native-navbar'
 /*Styles*/
 import styles,{colors} from './styles'
 
-@autobind
 class ListComicViews extends Component {
   constructor(props) {
     super(props)
-    // this.fetchData = this.fetchData.bind(this)
-    // this.renderComics = this.renderComics.bind(this)
-    // this.comicPressed = this.comicPressed.bind(this)
     this.state = {
       data: [],
       loaded: false,
@@ -37,6 +33,7 @@ class ListComicViews extends Component {
     this.fetchData('http://gateway.marvel.com/v1/public/characters')
   }
 
+  @autobind
   fetchData(url) {
     let ts, hash
     ts = 2
@@ -54,6 +51,7 @@ class ListComicViews extends Component {
       })
   }
 
+  @autobind
   comicPressed(comic) {
     const {navigator, route} = this.props
     navigator.push({
@@ -64,6 +62,7 @@ class ListComicViews extends Component {
     })
   }
 
+  @autobind
   renderComics(comic){
     const onPressComic = () => this.comicPressed(comic)
     return (
@@ -81,6 +80,7 @@ class ListComicViews extends Component {
     )
   }
 
+  @autobind
   renderLoadingView() {
     return (
       <View style={{flex: 1, alignItems: 'center', justifyContent: 'center' }}>

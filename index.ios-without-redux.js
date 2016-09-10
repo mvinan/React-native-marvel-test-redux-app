@@ -8,11 +8,13 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
+import styles, {colors} from './components/styles'
 import autobind from 'autobind-decorator'
+/*Components*/
+import ComicsView from './components/ComicsView'
+import ListComicsView from './components/ListComicsView'
+import ComicDetailView from './components/ComicDetailView'
 import Icon from 'react-native-vector-icons/FontAwesome';
-import styles, {colors} from './app/styles'
-
-import HomeView from './app/components/HomeView'
 
 const routeMapperNavigationBar = {
   LeftButton: (route, navigator, index, navState) => {
@@ -47,12 +49,13 @@ const routeMapperNavigationBar = {
 class App extends Component {
   constructor(props){
     super(props)
+    this.renderScene = this.renderScene.bind(this)
+    this.configureSceneAnimation = this.configureSceneAnimation.bind(this)
   }
 
-  @autobind
   configureSceneAnimation(route, routeStack){
     switch (route.name) {
-      case 'HomeView':
+      case 'ComicsView':
         return Navigator.SceneConfigs.FloatFromBottom
       case 'ListComicsView':
         return Navigator.SceneConfigs.FloatFromBottom
@@ -63,18 +66,21 @@ class App extends Component {
     }
   }
 
-  @autobind
   renderScene(route, navigator) {
     switch (route.name) {
-      case 'HomeView':
-        return <HomeView route={route} navigator={navigator} />
+      case 'ComicsView':
+        return <ComicsView route={route} navigator={navigator} />
+      case 'ListComicsView':
+        return <ListComicsView route={route} navigator={navigator} />
+      case 'ComicDetailView':
+        return <ComicDetailView route={route} navigator={navigator} />
     }
   }
 
   render() {
     return (
       <Navigator
-        initialRoute={{name: 'HomeView', title: 'Home', index: 0}}
+        initialRoute={{name: 'ComicsView', title: 'Home', index: 0}}
         renderScene={this.renderScene}
         configureScene={this.configureSceneAnimation}
         navigationBar={
