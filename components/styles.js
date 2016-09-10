@@ -12,8 +12,8 @@ export const colors = {
 }
 
 export const spaces = {
-  paddingHorizontal: 20,
-  paddingVertical: 10,
+  paddingHorizontal: 40,
+  paddingVertical: 20,
   borderRadius: 3,
   comicRowHeight: 180
 }
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spaces.paddingHorizontal,
     paddingVertical: spaces.paddingVertical,
     backgroundColor: colors.blue,
-    borderRadius: spaces.borderRadius
+    borderRadius: spaces.borderRadius,
   },
   secondaryButton: {
     paddingHorizontal: spaces.paddingHorizontal,
@@ -43,7 +43,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.orange
   },
   textButton: {
-    color: 'white'
+    color: 'white',
+    textAlign: 'center',
+    fontSize: 17
   },
   comicRow: {
     height: spaces.comicRowHeight,
@@ -52,7 +54,8 @@ const styles = StyleSheet.create({
   },
   comicText: {
     color: 'white',
-    fontSize: 20
+    fontSize: 20,
+    fontWeight: 'bold'
   },
   comicHeading: {
     color: '#242424',
@@ -62,6 +65,28 @@ const styles = StyleSheet.create({
     height: 250,
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  navigationBack: {
+    padding: 10
+  },
+  navigationBackText: {
+    color: colors.blue,
+    fontSize: 17,
+  },
+  navigationTitle: {
+    marginTop: 10,
+    color: colors.red,
+    fontSize: 17
+  },
+  navigationFoward: {
+    padding: 10
+  },
+  navigationBar: {
+    alignSelf: 'stretch',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 60,
+    backgroundColor: `rgba(248, 248, 248, 0.9)`,
   }
 })
 

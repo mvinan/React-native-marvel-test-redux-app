@@ -1,9 +1,11 @@
+import NavigationBar from 'react-native-navbar'
 import React, { Component } from 'react';
 import {
   View,
   AppRegistry,
   Text,
   Navigator,
+  TouchableOpacity,
 } from 'react-native';
 
 import styles, {colors} from './components/styles'
@@ -11,16 +13,18 @@ import styles, {colors} from './components/styles'
 import ComicsView from './components/ComicsView'
 import ListComicsView from './components/ListComicsView'
 import ComicDetailView from './components/ComicDetailView'
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const routeMapperNavigationBar = {
   LeftButton: (route, navigator, index, navState) => {
     if(route.index !== 0){
       return (
-        <Text
+        <TouchableOpacity
           onPress={()=>{navigator.pop()}}
-          style={{marginLeft: 10, paddingBottom: 10, paddingRight: 10, color: colors.blue}}>
-          Atras
-        </Text>
+          style={styles.navigationBack}>
+          {/* <Text style={styles.navigationBackText}>Regresar</Text> */}
+          <Icon name={'chevron-left'} size={20} color={colors.blue}/>
+        </TouchableOpacity>
       )
     }
     return null
@@ -30,7 +34,7 @@ const routeMapperNavigationBar = {
   },
   Title: (route, navigator, index, navState) => {
     if(route.index !== 0){
-      return <Text>{route.title}</Text>
+      return <Text style={styles.navigationTitle}>{route.title}</Text>
     }
     return null
   }
@@ -75,8 +79,8 @@ class App extends Component {
         configureScene={this.configureSceneAnimation}
         navigationBar={
           <Navigator.NavigationBar
-            style={{backgroundColor: colors.whiteTransparent, height: 50, paddingTop: 10}}
             routeMapper={routeMapperNavigationBar}
+            style={styles.navigationBar}
           />
         }
       />

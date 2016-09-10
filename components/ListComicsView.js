@@ -12,8 +12,9 @@ import {
 } from 'react-native';
 import Crypto from 'crypto-js';
 
+import NavigationBar from 'react-native-navbar'
 /*Styles*/
-import styles from './styles'
+import styles,{colors} from './styles'
 
 
 class ListComicViews extends Component {
@@ -89,7 +90,7 @@ class ListComicViews extends Component {
             justifyContent: 'center'
           }}
           size={"small"}
-          color={"black"}
+          color={colors.red}
         />
       </View>
     )
