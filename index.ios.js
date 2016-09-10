@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 
 import styles, {colors} from './components/styles'
+import autobind from 'autobind-decorator'
 /*Components*/
 import ComicsView from './components/ComicsView'
 import ListComicsView from './components/ListComicsView'
@@ -22,8 +23,13 @@ const routeMapperNavigationBar = {
         <TouchableOpacity
           onPress={()=>{navigator.pop()}}
           style={styles.navigationBack}>
-          {/* <Text style={styles.navigationBackText}>Regresar</Text> */}
-          <Icon name={'chevron-left'} size={20} color={colors.blue}/>
+          <Icon
+            name={'chevron-left'}
+            size={17}
+            color={colors.blue}
+          />
+          <Text style={styles.navigationBackText}>Atras</Text>
+
         </TouchableOpacity>
       )
     }

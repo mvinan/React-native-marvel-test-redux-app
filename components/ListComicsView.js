@@ -11,18 +11,19 @@ import {
   ActivityIndicator
 } from 'react-native';
 import Crypto from 'crypto-js';
+import autobind from 'autobind-decorator'
 
 import NavigationBar from 'react-native-navbar'
 /*Styles*/
 import styles,{colors} from './styles'
 
-
+@autobind
 class ListComicViews extends Component {
   constructor(props) {
     super(props)
-    this.fetchData = this.fetchData.bind(this)
-    this.renderComics = this.renderComics.bind(this)
-    this.comicPressed = this.comicPressed.bind(this)
+    // this.fetchData = this.fetchData.bind(this)
+    // this.renderComics = this.renderComics.bind(this)
+    // this.comicPressed = this.comicPressed.bind(this)
     this.state = {
       data: [],
       loaded: false,

@@ -67,11 +67,17 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   navigationBack: {
-    padding: 10
+    padding: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row'
   },
   navigationBackText: {
     color: colors.blue,
     fontSize: 17,
+    marginLeft: 5,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   navigationTitle: {
     marginTop: 10,
