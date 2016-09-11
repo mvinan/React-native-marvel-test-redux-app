@@ -7,12 +7,16 @@ import {
   Navigator,
   TouchableOpacity,
 } from 'react-native';
+import { Provider } from 'react-redux'
+import store from './app/store'
 
 import autobind from 'autobind-decorator'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import styles, {colors} from './app/styles'
 
 import HomeView from './app/components/HomeView'
+import CharactersView from './app/components/CharactersView'
+import ComicsView from './app/components/ComicsView'
 
 const routeMapperNavigationBar = {
   LeftButton: (route, navigator, index, navState) => {
@@ -68,22 +72,28 @@ class App extends Component {
     switch (route.name) {
       case 'HomeView':
         return <HomeView route={route} navigator={navigator} />
+      case 'CharactersView':
+        return <CharactersView route={route} navigator={navigator} />
+      case 'ComicsView':
+        return <ComicsView route={route} navigator={navigator} />
     }
   }
 
   render() {
     return (
-      <Navigator
-        initialRoute={{name: 'HomeView', title: 'Home', index: 0}}
-        renderScene={this.renderScene}
-        configureScene={this.configureSceneAnimation}
-        navigationBar={
-          <Navigator.NavigationBar
-            routeMapper={routeMapperNavigationBar}
-            style={styles.navigationBar}
-          />
-        }
-      />
+      <Provider store={store}>
+        <Navigator
+          initialRoute={{name: 'HomeView', title: 'Home', index: 0}}
+          renderScene={this.renderScene}
+          configureScene={this.configureSceneAnimation}
+          navigationBar={
+            <Navigator.NavigationBar
+              routeMapper={routeMapperNavigationBar}
+              style={styles.navigationBar}
+            />
+          }
+        />
+      </Provider>
     );
   }
 }

@@ -15,7 +15,7 @@ export const spaces = {
   paddingHorizontal: 40,
   paddingVertical: 20,
   borderRadius: 3,
-  comicRowHeight: 180
+  comicRowHeight: 200
 }
 
 const styles = StyleSheet.create({
@@ -34,13 +34,14 @@ const styles = StyleSheet.create({
   primaryButton: {
     paddingHorizontal: spaces.paddingHorizontal,
     paddingVertical: spaces.paddingVertical,
-    backgroundColor: colors.blue,
+    backgroundColor: colors.red,
     borderRadius: spaces.borderRadius,
   },
   secondaryButton: {
     paddingHorizontal: spaces.paddingHorizontal,
     paddingVertical: spaces.paddingVertical,
-    backgroundColor: colors.orange
+    backgroundColor: colors.orange,
+    borderRadius: spaces.borderRadius,
   },
   textButton: {
     color: 'white',
