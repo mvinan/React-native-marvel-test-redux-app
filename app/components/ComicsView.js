@@ -11,26 +11,43 @@ import autobind from 'autobind-decorator'
 import {connect} from 'react-redux'
 import {fetchComics} from '../actions/comicsActions'
 
+import {apiKey, secretKey} from '../../keys'
 import styles, {colors} from '../styles'
+import Crypto from 'crypto-js'
 
-@connect( store => {
-  return {
-    dataComics: store.fetchComics
-  }
-})
 class ComicsView extends Component {
   constructor(props){
     super(props)
     this.state = {
+      data: [],
+      loaded: false,
       dataSource: new ListView.DataSource({
         rowHasChanged: (row1, row2) => row1 !== row2
        })
     }
   }
 
-  componentWillMount(){
+  componentDidMount(){
     let url = 'http://gateway.marvel.com/v1/public/comics'
-    this.props.dispatch(fetchComics(url, this.state.dataSource))
+    this.fetchData(url)
+  }
+
+  @autobind
+  fetchData(url){
+    let ts, hash
+    ts = 2
+    hash = Crypto.MD5( ts + secretKey + apiKey )
+
+    fetch(`${url}?ts=${ts}&apikey=${apiKey}&hash=${hash}`)
+      .then( result => result.json() )
+      .then( res => {
+        let data = res.data.results
+        this.setState({
+          data,
+          loaded: true,
+          dataSource: this.state.dataSource.cloneWithRows(data)
+        })
+      })
   }
 
   @autobind
@@ -55,7 +72,7 @@ class ComicsView extends Component {
   }
 
   render() {
-    if(!this.props.dataComics.dataFetched){
+    if(!this.state.loaded){
       return (
         <View style={{flex: 1, alignItems: 'center', justifyContent: 'center' }}>
           <ActivityIndicator
@@ -73,7 +90,7 @@ class ComicsView extends Component {
     return (
       <ListView
         style={{marginTop: 10}}
-        dataSource={this.props.dataComics.dataSource}
+        dataSource={this.state.dataSource}
         renderRow={this.renderComics}
       />
     );

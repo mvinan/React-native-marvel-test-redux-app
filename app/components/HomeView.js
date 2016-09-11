@@ -26,22 +26,20 @@ class HomeView extends Component {
 
   @autobind
   comicsRender(){
-    this.props.dispatch(goToView({
-      navigator: this.props.navigator,
+    this.props.navigator.push({
       title: 'Lista de Comics',
       index: 1,
       name: 'ComicsView'
-    }))
+    })
   }
 
   @autobind
   charactersRender(){
-    this.props.dispatch(goToView({
-      navigator: this.props.navigator,
+    this.props.navigator.push({
       title: 'Personajes',
       index: 2,
       name: 'CharactersView'
-    }))
+    })
   }
 
   render() {
