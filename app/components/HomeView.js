@@ -20,10 +20,6 @@ class HomeView extends Component {
     super(props)
   }
 
-  componentWillMount(){
-    console.log(this.props)
-  }
-
   @autobind
   comicsRender(){
     this.props.navigator.push({
