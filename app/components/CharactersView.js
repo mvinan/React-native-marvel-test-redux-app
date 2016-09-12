@@ -8,46 +8,42 @@ import {
   Image
 } from 'react-native';
 import autobind from 'autobind-decorator'
-import {connect} from 'react-redux'
-import {fetchComics} from '../actions/comicsActions'
+import { connect } from 'react-redux'
+import { fetchCharacters } from '../actions/comicsActions'
 
-import {apiKey, secretKey} from '../../keys'
+import {apiKey, secretKey, ts, hash} from '../../keys'
 import styles, {colors} from '../styles'
 import Crypto from 'crypto-js'
 
+@connect( store => ({
+  dataCharacters: store.fetchCharacters.data,
+  dataFetched: store.fetchCharacters.dataFetched,
+  dataSource: store.fetchCharacters.dataSource
+}))
 class ComicsView extends Component {
   constructor(props){
     super(props)
-    this.state = {
-      data: [],
-      loaded: false,
-      dataSource: new ListView.DataSource({
-        rowHasChanged: (row1, row2) => row1 !== row2
-       })
-    }
   }
 
   componentDidMount(){
+    let { dispatch, dataCharacters } = this.props
     let url = 'http://gateway.marvel.com/v1/public/characters'
-    this.fetchData(url)
+    let urlBase = `${url}?ts=${ts}&apikey=${apiKey}&hash=${hash}`
+
+    if(!dataCharacters.length){
+      dispatch( fetchCharacters(urlBase) )
+    }
   }
 
   @autobind
-  fetchData(url){
-    let ts, hash
-    ts = 2
-    hash = Crypto.MD5( ts + secretKey + apiKey )
-
-    fetch(`${url}?ts=${ts}&apikey=${apiKey}&hash=${hash}`)
-      .then( result => result.json() )
-      .then( res => {
-        let data = res.data.results
-        this.setState({
-          data,
-          loaded: true,
-          dataSource: this.state.dataSource.cloneWithRows(data)
-        })
-      })
+  onPressComic(comic){
+    const {navigator, route} = this.props
+    navigator.push({
+      title: 'Detalle Caracter',
+      index: comic.id,
+      name: 'CharacterDetails',
+      dataCharacters: comic
+    })
   }
 
   @autobind
@@ -55,7 +51,7 @@ class ComicsView extends Component {
     let id = comic.id
     return (
       <TouchableHighlight
-        onPress={this.onPressComic}>
+        onPress={() => this.onPressComic(comic)}>
         <Image
           source={{uri: `${comic.thumbnail.path}.${comic.thumbnail.extension}`}}
           style={styles.comicRow}
@@ -72,7 +68,8 @@ class ComicsView extends Component {
   }
 
   render() {
-    if(!this.state.loaded){
+    let { dataFetched, dataSource } = this.props
+    if(!dataFetched){
       return (
         <View style={{flex: 1, alignItems: 'center', justifyContent: 'center' }}>
           <ActivityIndicator
@@ -89,8 +86,8 @@ class ComicsView extends Component {
     }
     return (
       <ListView
-        style={{marginTop: 10}}
-        dataSource={this.state.dataSource}
+        style={{marginTop: 60}}
+        dataSource={dataSource}
         renderRow={this.renderComics}
       />
     );

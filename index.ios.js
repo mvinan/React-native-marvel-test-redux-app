@@ -17,6 +17,8 @@ import styles, {colors} from './app/styles'
 import HomeView from './app/components/HomeView'
 import CharactersView from './app/components/CharactersView'
 import ComicsView from './app/components/ComicsView'
+import ComicDetails from './app/components/ComicDetails'
+import CharacterDetails from './app/components/CharacterDetails'
 
 const routeMapperNavigationBar = {
   LeftButton: (route, navigator, index, navState) => {
@@ -51,17 +53,18 @@ const routeMapperNavigationBar = {
 class App extends Component {
   constructor(props){
     super(props)
+    this.state= {
+      route: null
+    }
   }
 
   @autobind
   configureSceneAnimation(route, routeStack){
     switch (route.name) {
-      case 'HomeView':
+      case 'CharactersView':
         return Navigator.SceneConfigs.FloatFromBottom
-      case 'ListComicsView':
+      case 'ComicsView':
         return Navigator.SceneConfigs.FloatFromBottom
-      case 'ComicDetailView':
-        return Navigator.SceneConfigs.HorizontalSwipeJump
       default:
         return Navigator.SceneConfigs.PushFromRight
     }
@@ -74,8 +77,14 @@ class App extends Component {
         return <HomeView route={route} navigator={navigator} />
       case 'CharactersView':
         return <CharactersView route={route} navigator={navigator} />
+      case 'CharactersDetails':
+        return <CharactersDetails route={route} navigator={navigator} />
       case 'ComicsView':
         return <ComicsView route={route} navigator={navigator} />
+      case 'ComicDetails':
+        return <ComicDetails route={route} navigator={navigator} />
+      case 'CharacterDetails':
+        return <CharacterDetails route={route} navigator={navigator} />
     }
   }
 
@@ -89,7 +98,6 @@ class App extends Component {
           navigationBar={
             <Navigator.NavigationBar
               routeMapper={routeMapperNavigationBar}
-              style={styles.navigationBar}
             />
           }
         />

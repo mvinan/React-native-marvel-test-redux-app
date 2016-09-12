@@ -2,18 +2,13 @@
  * Module Dependecies
  */
 import Crypto from 'crypto-js'
-import {apiKey, secretKey } from '../../keys.js'
+import { apiKey, secretKey, hash, ts, url } from '../../keys.js'
 import axios from 'axios'
-import {ListView} from 'react-native'
+import { ListView } from 'react-native'
 
 export const fetchComics = (urlBase, listView) => {
   return function(dispatch) {
-    let hash, ts, url
-    ts = 1
-    hash = Crypto.MD5(ts+secretKey+apiKey)
-
-    url = `${urlBase}?ts=${ts}&apikey=${apiKey}&hash=${hash}`
-    axios.get(url)
+    axios.get(urlBase)
       .then( res => {
         let data = res.data.data.results
         dispatch({
@@ -22,5 +17,14 @@ export const fetchComics = (urlBase, listView) => {
           dataSource: listView.cloneWithRows(data)
         })
       })
+  }
+}
+
+export const fetchCharacters = (urlBase) => {
+  return function(dispatch){
+    dispatch({
+      type: 'FETCH_CHARACTERS',
+      payload: axios.get(urlBase)
+    })
   }
 }

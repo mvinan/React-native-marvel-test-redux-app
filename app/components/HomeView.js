@@ -12,9 +12,6 @@ import autobind from 'autobind-decorator'
 
 import goToView from '../actions/routeActions'
 
-@connect( store => {
-  return store
-})
 class HomeView extends Component {
   constructor(props){
     super(props)

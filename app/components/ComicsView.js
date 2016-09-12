@@ -11,16 +11,20 @@ import autobind from 'autobind-decorator'
 import {connect} from 'react-redux'
 import {fetchComics} from '../actions/comicsActions'
 
-import {apiKey, secretKey} from '../../keys'
+import {apiKey, secretKey, ts, hash} from '../../keys'
 import styles, {colors} from '../styles'
 import Crypto from 'crypto-js'
 
+
+@connect( store => {
+  return {
+    dataComics: store.fetchComics
+  }
+})
 class ComicsView extends Component {
   constructor(props){
     super(props)
     this.state = {
-      data: [],
-      loaded: false,
       dataSource: new ListView.DataSource({
         rowHasChanged: (row1, row2) => row1 !== row2
        })
@@ -28,34 +32,31 @@ class ComicsView extends Component {
   }
 
   componentDidMount(){
+    let { dispatch, dataComics } = this.props
     let url = 'http://gateway.marvel.com/v1/public/comics'
-    this.fetchData(url)
+    let urlBase = `${url}?ts=${ts}&apikey=${apiKey}&hash=${hash}`
+
+    if(!dataComics.data.length > 0){
+      dispatch( fetchComics(urlBase, this.state.dataSource))
+    }
   }
 
   @autobind
-  fetchData(url){
-    let ts, hash
-    ts = 2
-    hash = Crypto.MD5( ts + secretKey + apiKey )
-
-    fetch(`${url}?ts=${ts}&apikey=${apiKey}&hash=${hash}`)
-      .then( result => result.json() )
-      .then( res => {
-        let data = res.data.results
-        this.setState({
-          data,
-          loaded: true,
-          dataSource: this.state.dataSource.cloneWithRows(data)
-        })
-      })
+  onPressComic(comic){
+    let {navigator, route} = this.props
+    navigator.push({
+      title: 'Detalle del Comic',
+      index: comic.id,
+      name: 'ComicDetails',
+      comicData: comic
+    })
   }
 
   @autobind
   renderComics(comic){
-    let id = comic.id
     return (
       <TouchableHighlight
-        onPress={this.onPressComic}>
+        onPress={()=>this.onPressComic(comic)}>
         <Image
           source={{uri: `${comic.thumbnail.path}.${comic.thumbnail.extension}`}}
           style={styles.comicRow}
@@ -72,7 +73,8 @@ class ComicsView extends Component {
   }
 
   render() {
-    if(!this.state.loaded){
+    let { dataComics } = this.props
+    if(!dataComics.dataFetched){
       return (
         <View style={{flex: 1, alignItems: 'center', justifyContent: 'center' }}>
           <ActivityIndicator
@@ -89,8 +91,8 @@ class ComicsView extends Component {
     }
     return (
       <ListView
-        style={{marginTop: 10}}
-        dataSource={this.state.dataSource}
+        style={{marginTop: 60}}
+        dataSource={dataComics.dataSource}
         renderRow={this.renderComics}
       />
     );
